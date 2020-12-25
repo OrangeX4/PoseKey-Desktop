@@ -1,18 +1,19 @@
 from flask import Flask, request
-# from flask_sqlalchemy import SQLAlchemy
-# from os import path
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + path.join(app.root_path, 'data.db')
-# db = SQLAlchemy(app)
-
 
 @app.route('/', methods=['POST'])
 def hello_world():
     json = request.get_json()
-    print(json)
+    print(json['time'])
+    with open('data.json', 'a', encoding='utf-8') as f:
+        f.write(str(json) + '\n')  # dict to str
     return 'Success'
-
+    
+def load():
+    with open('data.json', 'r', encoding='utf-8') as f:
+        dict = eval(f.read())  # eval
+        print(dict)
 
 if __name__ == "__main__":
     app.run(debug=False)
