@@ -1,0 +1,126 @@
+{
+    "test": "android",
+    "score": 0.8146785497665405,
+    "time": 1608909337572,
+    "keyPoints": {
+        "NOSE": {
+            "score": 0.815959095954895,
+            "position": {
+                "x": 127,
+                "y": 88
+            }
+        },
+        "LEFT_EYE": {
+            "score": 0.7012987732887268,
+            "position": {
+                "x": 128,
+                "y": 85
+            }
+        },
+        "RIGHT_EYE": {
+            "score": 0.5838527679443359,
+            "position": {
+                "x": 127,
+                "y": 85
+            }
+        },
+        "LEFT_EAR": {
+            "score": 0.8103403449058533,
+            "position": {
+                "x": 131,
+                "y": 86
+            }
+        },
+        "RIGHT_EAR": {
+            "score": 0.5026875734329224,
+            "position": {
+                "x": 130,
+                "y": 85
+            }
+        },
+        "LEFT_SHOULDER": {
+            "score": 0.9689308404922485,
+            "position": {
+                "x": 127,
+                "y": 101
+            }
+        },
+        "RIGHT_SHOULDER": {
+            "score": 0.9753607511520386,
+            "position": {
+                "x": 131,
+                "y": 100
+            }
+        },
+        "LEFT_ELBOW": {
+            "score": 0.8243715167045593,
+            "position": {
+                "x": 111,
+                "y": 120
+            }
+        },
+        "RIGHT_ELBOW": {
+            "score": 0.6323183178901672,
+            "position": {
+                "x": 155,
+                "y": 119
+            }
+        },
+        "LEFT_WRIST": {
+            "score": 0.7550386190414429,
+            "position": {
+                "x": 110,
+                "y": 137
+            }
+        },
+        "RIGHT_WRIST": {
+            "score": 0.5845995545387268,
+            "position": {
+                "x": 126,
+                "y": 136
+            }
+        },
+        "LEFT_HIP": {
+            "score": 0.9933162927627563,
+            "position": {
+                "x": 124,
+                "y": 135
+            }
+        },
+        "RIGHT_HIP": {
+            "score": 0.9925392866134644,
+            "position": {
+                "x": 130,
+                "y": 136
+            }
+        },
+        "LEFT_KNEE": {
+            "score": 0.9693067073822021,
+            "position": {
+                "x": 131,
+                "y": 159
+            }
+        },
+        "RIGHT_KNEE": {
+            "score": 0.9470896124839783,
+            "position": {
+                "x": 126,
+                "y": 159
+            }
+        },
+        "LEFT_ANKLE": {
+            "score": 0.9394081234931946,
+            "position": {
+                "x": 128,
+                "y": 179
+            }
+        },
+        "RIGHT_ANKLE": {
+            "score": 0.853115975856781,
+            "position": {
+                "x": 123,
+                "y": 179
+            }
+        }
+    }
+}

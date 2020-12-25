@@ -1,15 +1,17 @@
 from flask import Flask, request
+# from flask_sqlalchemy import SQLAlchemy
+# from os import path
 
 app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + path.join(app.root_path, 'data.db')
+# db = SQLAlchemy(app)
 
 
 @app.route('/', methods=['POST'])
 def hello_world():
     json = request.get_json()
-    for key, keyPoint in json['keyPoints'].items():
-        print('{}: {} {}'.format(
-            key, keyPoint['position']['x'], keyPoint['position']['y']))
-    return 'Success!'
+    print(json)
+    return 'Success'
 
 
 if __name__ == "__main__":
