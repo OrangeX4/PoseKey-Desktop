@@ -16,7 +16,7 @@ def post():
     for point in json['keyPoints'].values():
         array.append([point['score'], point['position']['x'] / 300, point['position']['y'] / 300])
     data.append(array)
-    if len(data) == 12:
+    if len(data) == 24:
         predictions = model.predict([data[:12]])
         if predictions[0][0] > 0.5:
             print('STAND')
