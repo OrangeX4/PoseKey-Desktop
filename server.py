@@ -17,11 +17,12 @@ def post():
         array.append([point['score'], point['position']['x'] / 300, point['position']['y'] / 300])
     data.append(array)
     if len(data) == 24:
-        predictions = model.predict([data[:12]])
-        if predictions[0][0] > 0.5:
-            print('STAND')
-        else:
-            print('RUN')
+        predictions = model.predict([data[:24]])
+        print(predictions[0])
+        # if predictions[0][0] > 0.5:
+        #     print('STAND')
+        # else:
+        #     print('RUN')
         data.clear()
     return 'Success'
 

@@ -2,7 +2,7 @@ import numpy as np
 with open('autodata.json', 'r', encoding='utf-8') as f:
     data = []
     label = []
-    for i in range(600):
+    for i in range(800):
         label_stand = 0
         label_run = 0
         dataArray = []
