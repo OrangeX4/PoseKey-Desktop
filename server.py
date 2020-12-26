@@ -1,15 +1,28 @@
 from flask import Flask, request
-from tensorflow import keras
+from tensorflow.keras.models import load_model
+import logging
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 app = Flask(__name__)
+model = load_model('model.h5')
+data = []
 
 @app.route('/', methods=['POST'])
 def post():
-    probability_model = keras.models.load_model('model.h5')
-    # predictions = probability_model.predict(test_images)
     json = request.get_json()
-    print(json['time'])
-    with open('data.json', 'a', encoding='utf-8') as f:
-        f.write(str(json) + '\n')  # dict to str
+    array = []
+    for point in json['keyPoints'].values():
+        array.append([point['score'], point['position']['x'] / 300, point['position']['y'] / 300])
+    data.append(array)
+    if len(data) == 12:
+        predictions = model.predict([data[:12]])
+        if predictions[0][0] > 0.5:
+            print('STAND')
+        else:
+            print('RUN')
+        data.clear()
     return 'Success'
 
 if __name__ == "__main__":
