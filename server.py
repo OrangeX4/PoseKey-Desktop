@@ -9,6 +9,7 @@ app = Flask(__name__)
 model = load_model('model.h5')
 data = []
 
+print('STAND')
 @app.route('/', methods=['POST'])
 def post():
     json = request.get_json()
@@ -18,11 +19,11 @@ def post():
     data.append(array)
     if len(data) == 24:
         predictions = model.predict([data[:24]])
-        print(predictions[0])
-        # if predictions[0][0] > 0.5:
-        #     print('STAND')
-        # else:
-        #     print('RUN')
+        # print(predictions[0])
+        if predictions[0][0] > 0.5:
+            print('STAND')
+        else:
+            print('RUN')
         data.clear()
     return 'Success'
 
