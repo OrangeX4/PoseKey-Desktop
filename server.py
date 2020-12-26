@@ -12,7 +12,7 @@ def hello_world():
     
 def load():
     with open('data.json', 'r', encoding='utf-8') as f:
-        dict = eval(f.read())  # eval
+        dict = eval(f.readline().strip())  # eval
         print(dict)
 
 if __name__ == "__main__":
