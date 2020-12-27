@@ -1,6 +1,8 @@
 from flask import Flask, request
 import os
 import numpy as np
+import tensorflow as tf
+from tensorflow import keras
 import threading
 import random
 import logging
@@ -28,10 +30,17 @@ def fun_timer():
         timer.start()
     else:
         print('STOP')
-        print(np.array(data))
-        print(np.array(labels))
-        print(np.array(data).shape)
-        print(np.array(labels).shape)
+        print('--------------------------------')
+        print('We will train the model for you.')
+        print('--------------------------------')
+        train()
+        print('--------------------------------')
+        print('Welcome to try the new model!')
+        print('--------------------------------')
+        # print(np.array(data))
+        # print(np.array(labels))
+        # print(np.array(data).shape)
+        # print(np.array(labels).shape)
         os._exit(0)
 
 
@@ -40,6 +49,9 @@ def fun_timer():
 label = [0]
 count = [1]
 MAX_COUNT = [10]
+print('--------------------------------')
+print('READY? GO!')
+print('--------------------------------')
 print('STAND')
 timer = threading.Timer(random.randint(3, 10), fun_timer)
 timer.start()
@@ -81,6 +93,18 @@ def post():
         dataArray[0] = []
 
     return 'Success'
+
+
+def train():
+    index = np.arange(len(data))
+    np.random.shuffle(index)
+    train_images = np.array(data)[index]
+    train_labels = np.array(labels)[index]
+    model = tf.keras.models.load_model('premodel.h5')
+    model.fit(train_images, train_labels, epochs=10)
+    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+    probability_model.save('model.h5')
+    model.save('premodel.h5')
 
 
 if __name__ == "__main__":
