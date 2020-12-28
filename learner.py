@@ -14,17 +14,22 @@ app = Flask(__name__)
 # 定时器获取数据
 
 
+def weightedRandom(weighted):
+    r = random.randint(1, sum(weighted))
+    c = 0
+    for index, w in enumerate(weighted):
+        c = c + w
+        if c >= r:
+            return index
+
+
 def fun_timer():
     global timer
     # 对于HEAD: 给中间状态增加训练权重
-    headRand = random.randint(0, 15)
-    if headRand > 8:
-        headRand = 4
+    headRand = weightedRandom([1, 3, 1, 1, 5, 1, 1, 3, 1])
     headLabel[0] = headRand
     # 对于STAND:
-    standRand = random.randint(0, 3)
-    if standRand > 1:
-        standRand = 0
+    standRand = weightedRandom([2, 1])
     standLabel[0] = standRand
     # count计数, 直到最大的MAX_COUNT就停止
     count[0] += 1
