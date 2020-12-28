@@ -99,11 +99,9 @@ def train():
     np.random.shuffle(index)
     train_images = np.array(data)[index]
     train_labels = np.array(labels)[index]
-    model = tf.keras.models.load_model('premodel.h5')
-    model.fit(train_images, train_labels, epochs=20)
-    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-    probability_model.save('model.h5')
-    model.save('premodel.h5')
+    stand_model = tf.keras.models.load_model('stand_model.h5')
+    stand_model.fit(train_images, train_labels, epochs=20)
+    stand_model.save('stand_model.h5')
 
 
 if __name__ == "__main__":

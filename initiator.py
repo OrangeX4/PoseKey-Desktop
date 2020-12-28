@@ -93,18 +93,16 @@ def train():
     train_images = np.array(data)[index]
     train_labels = np.array(labels)[index]
     np.savez('trainData.npz', train_images=train_images, train_labels=train_labels)
-    model = tf.keras.Sequential([
+    head_model = tf.keras.Sequential([
         tf.keras.layers.Flatten(input_shape=(24, 17, 3)),
         tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dense(9)
     ])
-    model.compile(optimizer='adam',
+    head_model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
-    model.fit(train_images, train_labels, epochs=20)
-    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-    probability_model.save('newmodel.h5')
-    model.save('newpremodel.h5')
+    head_model.fit(train_images, train_labels, epochs=20)
+    head_model.save('head_model.h5')
 
 
 if __name__ == "__main__":
