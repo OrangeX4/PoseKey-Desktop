@@ -16,14 +16,18 @@ app = Flask(__name__)
 
 def fun_timer():
     global timer
-    if label[0] == 0:
-        label[0] = 1
-        count[0] += 1
-        print('RUN')
-    else:
-        label[0] = 0
-        count[0] += 1
-        print('STAND')
+    # 对于HEAD: 给中间状态增加训练权重
+    headRand = random.randint(0, 15)
+    if headRand > 8:
+        headRand = 4
+    headLabel[0] = headRand
+    # 对于STAND:
+    standRand = random.randint(0, 1)
+    standLabel[0] = standRand
+    # count计数, 直到最大的MAX_COUNT就停止
+    count[0] += 1
+    print(str(count[0]) + ': ' + standLabelMap[headRand] +
+          ' ' + standLabelMap[headRand])
     if count[0] < MAX_COUNT[0]:
         timer = threading.Timer(random.randint(3, 10), fun_timer)
         timer.start()
@@ -41,13 +45,17 @@ def fun_timer():
 
 # 初始化定义
 
-label = [0]
+headLabel = [4]
+headLabelMap = ['LEFT UP', 'CENTER UP', 'RIGHT UP', 'LEFT CENTER',
+                'CENTER CENTER', 'RIGHT CENTER', 'LEFT DOWN', 'CENTER DOWN', 'RIGHT DOWN']
+standLabel = [0]
+standLabelMap = ['STAND', 'RUN']
 count = [1]
-MAX_COUNT = [10]
+MAX_COUNT = [20]
 print('--------------------------------')
 print('READY? GO!')
 print('--------------------------------')
-print('STAND')
+print('1: CENTER CENTER')
 timer = threading.Timer(random.randint(3, 10), fun_timer)
 timer.start()
 
@@ -55,28 +63,30 @@ timer.start()
 # 处理数据
 try:
     dataFile = np.load('data.npz')
-except IOError:
+except:
     data = []
-    stand_labels = []
-    head_labels = []
+    headLabels = []
+    standLabels = []
 else:
     data = dataFile['data'].tolist()
-    stand_labels = dataFile['stand_labels'].tolist()
-    stand_labels = dataFile['stand_labels'].tolist()
-    head_labels = dataFile['head_labels'].tolist()
-    
-label_stand = [0]
-label_run = [0]
+    headLabels = dataFile['headLabels'].tolist()
+    standLabels = dataFile['standLabels'].tolist()
+
+headLabelCount = [[0, 0, 0, 0, 0, 0, 0, 0, 0]]
+standLabelCount = [[0, 0]]
 dataArray = [[]]
+
+
+def getMaxIndex(array):
+    maxValue = max(array)  # 返回最大值
+    return array.index(maxValue)
 
 
 @app.route('/', methods=['POST'])
 def post():
     json = request.get_json()
-    if label[0] == 0:
-        label_stand[0] += 1
-    else:
-        label_run[0] += 1
+    headLabelCount[0][headLabel[0]] += 1
+    standLabelCount[0][standLabel[0]] += 1
     array = []
     for point in json['keyPoints'].values():
         array.append([point['score'], point['position']
@@ -85,14 +95,12 @@ def post():
 
     # 当数据达到24时:
     if len(dataArray[0]) >= 24:
-        if label_stand[0] >= label_run[0]:
-            stand_labels.append(0)
-        else:
-            stand_labels.append(1)
+        headLabels.append(getMaxIndex(headLabelCount[0]))
+        standLabels.append(getMaxIndex(standLabelCount[0]))
         data.append(dataArray[0])
         # 清理
-        label_stand[0] = 0
-        label_run[0] = 0
+        headLabelCount[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        standLabelCount[0] = [0, 0]
         dataArray[0] = []
 
     return 'Success'
@@ -101,11 +109,17 @@ def post():
 def train():
     index = np.arange(len(data))
     np.random.shuffle(index)
-    train_images = np.array(data)[index]
-    train_labels = np.array(stand_labels)[index]
-    stand_model = tf.keras.models.load_model('stand_model.h5')
-    stand_model.fit(train_images, train_labels, epochs=20)
-    stand_model.save('stand_model.h5')
+    shuffledData = np.array(data)[index]
+    shuffledHeadLabels = np.array(headLabels)[index]
+    shuffledStandLabels = np.array(standLabels)[index]
+    np.savez('data.npz', data=shuffledData,
+             headLabels=shuffledHeadLabels, standLabels=shuffledStandLabels)
+    headModel = tf.keras.models.load_model('headModel.h5')
+    headModel.fit(shuffledData, shuffledHeadLabels, epochs=20)
+    headModel.save('headModel.h5')
+    standModel = tf.keras.models.load_model('standModel.h5')
+    standModel.fit(shuffledData, shuffledStandLabels, epochs=20)
+    standModel.save('standModel.h5')
 
 
 if __name__ == "__main__":
