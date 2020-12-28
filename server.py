@@ -36,7 +36,6 @@ def post():
             print('STAND')
         else:
             print('RUN')
-        print(head_predictions)
         print(labelMap[getMaxIndex(head_predictions[0])])
         data.clear()
     return 'Success'
