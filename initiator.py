@@ -16,14 +16,10 @@ app = Flask(__name__)
 
 def fun_timer():
     global timer
-    if label[0] == 0:
-        label[0] = 1
-        count[0] += 1
-        print('RUN')
-    else:
-        label[0] = 0
-        count[0] += 1
-        print('STAND')
+    rand = random.randint(0, 8)
+    label[0] = rand
+    count[0] += 1
+    print(str(count[0]) + ': ' + labelMap[rand])
     if count[0] < MAX_COUNT[0]:
         timer = threading.Timer(random.randint(3, 10), fun_timer)
         timer.start()
@@ -41,13 +37,14 @@ def fun_timer():
 
 # 初始化定义
 
-label = [0]
+label = [4]
+labelMap = ['LEFT UP', 'CENTER UP', 'RIGHT UP', 'LEFT CENTER', 'CENTER CENTER', 'RIGHT CENTER', 'LEFT DOWN', 'CENTER DOWN', 'RIGHT DOWN']
 count = [1]
-MAX_COUNT = [20]
+MAX_COUNT = [30]
 print('--------------------------------')
 print('READY? GO!')
 print('--------------------------------')
-print('STAND')
+print('1: CENTER CENTER')
 timer = threading.Timer(random.randint(3, 10), fun_timer)
 timer.start()
 
@@ -95,10 +92,11 @@ def train():
     np.random.shuffle(index)
     train_images = np.array(data)[index]
     train_labels = np.array(labels)[index]
+    np.savez('trainData.npz', train_images=train_images, train_labels=train_labels)
     model = tf.keras.Sequential([
         tf.keras.layers.Flatten(input_shape=(24, 17, 3)),
         tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(2)
+        tf.keras.layers.Dense(9)
     ])
     model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
