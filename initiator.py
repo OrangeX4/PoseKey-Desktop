@@ -36,10 +36,6 @@ def fun_timer():
         print('--------------------------------')
         print('Welcome to try the new model!')
         print('--------------------------------')
-        # print(np.array(data))
-        # print(np.array(labels))
-        # print(np.array(data).shape)
-        # print(np.array(labels).shape)
         os._exit(0)
 
 
@@ -47,7 +43,7 @@ def fun_timer():
 
 label = [0]
 count = [1]
-MAX_COUNT = [10]
+MAX_COUNT = [20]
 print('--------------------------------')
 print('READY? GO!')
 print('--------------------------------')
@@ -99,14 +95,21 @@ def train():
     np.random.shuffle(index)
     train_images = np.array(data)[index]
     train_labels = np.array(labels)[index]
-    model = tf.keras.models.load_model('premodel.h5')
+    model = tf.keras.Sequential([
+        tf.keras.layers.Flatten(input_shape=(24, 17, 3)),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(2)
+    ])
+    model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
     model.fit(train_images, train_labels, epochs=20)
     probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
-    probability_model.save('model.h5')
-    model.save('premodel.h5')
+    probability_model.save('newmodel.h5')
+    model.save('newpremodel.h5')
 
 
 if __name__ == "__main__":
     app.run(debug=False)
-    # $env:FLASK_APP = "learner.py"
+    # $env:FLASK_APP = "initiator.py"
     # flask run --host=0.0.0.0

@@ -41,7 +41,7 @@ timer.start()
 def post():
     json = request.get_json()
     json['label'] = label[0]
-    with open('temp.json', 'a', encoding='utf-8') as f:
+    with open('data.json', 'a', encoding='utf-8') as f:
         f.write(str(json) + '\n')  # dict to str
     return 'Success'
 
