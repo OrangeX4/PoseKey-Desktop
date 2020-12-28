@@ -22,14 +22,16 @@ def fun_timer():
         headRand = 4
     headLabel[0] = headRand
     # 对于STAND:
-    standRand = random.randint(0, 1)
+    standRand = random.randint(0, 3)
+    if standRand > 1:
+        standRand = 0
     standLabel[0] = standRand
     # count计数, 直到最大的MAX_COUNT就停止
     count[0] += 1
-    print(str(count[0]) + ': ' + standLabelMap[headRand] +
-          ' ' + standLabelMap[headRand])
+    print(str(count[0]) + ': ' + standLabelMap[standRand] +
+          ' ' + headLabelMap[headRand])
     if count[0] < MAX_COUNT[0]:
-        timer = threading.Timer(random.randint(3, 10), fun_timer)
+        timer = threading.Timer(random.randint(5, 10), fun_timer)
         timer.start()
     else:
         print('STOP')
@@ -55,7 +57,7 @@ MAX_COUNT = [20]
 print('--------------------------------')
 print('READY? GO!')
 print('--------------------------------')
-print('1: CENTER CENTER')
+print('1: STAND CENTER CENTER')
 timer = threading.Timer(random.randint(3, 10), fun_timer)
 timer.start()
 
@@ -71,6 +73,8 @@ else:
     data = dataFile['data'].tolist()
     headLabels = dataFile['headLabels'].tolist()
     standLabels = dataFile['standLabels'].tolist()
+
+print(len(data))
 
 headLabelCount = [[0, 0, 0, 0, 0, 0, 0, 0, 0]]
 standLabelCount = [[0, 0]]
@@ -97,6 +101,7 @@ def post():
     if len(dataArray[0]) >= 24:
         headLabels.append(getMaxIndex(headLabelCount[0]))
         standLabels.append(getMaxIndex(standLabelCount[0]))
+        # print('Label: ' + str(getMaxIndex(standLabelCount[0])))
         data.append(dataArray[0])
         # 清理
         headLabelCount[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
