@@ -54,18 +54,19 @@ timer.start()
 data = []
 labels = []
 
-label_stand = [0]
-label_run = [0]
+label_count = [[0, 0, 0, 0, 0, 0, 0, 0, 0]]
 dataArray = [[]]
+
+
+def getMaxIndex(array):
+    maxValue = max(array)  # 返回最大值
+    return array.index(maxValue)
 
 
 @app.route('/', methods=['POST'])
 def post():
     json = request.get_json()
-    if label[0] == 0:
-        label_stand[0] += 1
-    else:
-        label_run[0] += 1
+    label_count[0][label[0]] += 1
     array = []
     for point in json['keyPoints'].values():
         array.append([point['score'], point['position']
@@ -74,14 +75,10 @@ def post():
 
     # 当数据达到24时:
     if len(dataArray[0]) >= 24:
-        if label_stand[0] >= label_run[0]:
-            labels.append(0)
-        else:
-            labels.append(1)
+        labels.append(getMaxIndex(label_count[0]))
         data.append(dataArray[0])
         # 清理
-        label_stand[0] = 0
-        label_run[0] = 0
+        label_count[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         dataArray[0] = []
 
     return 'Success'
@@ -91,8 +88,8 @@ def train():
     index = np.arange(len(data))
     np.random.shuffle(index)
     train_images = np.array(data)[index]
-    train_labels = np.array(labels)[index]
-    np.savez('trainData.npz', train_images=train_images, train_labels=train_labels)
+    head_labels = np.array(labels)[index]
+    np.savez('trainData.npz', data=train_images, head_labels=head_labels)
     head_model = tf.keras.Sequential([
         tf.keras.layers.Flatten(input_shape=(24, 17, 3)),
         tf.keras.layers.Dense(128, activation='relu'),
@@ -101,7 +98,7 @@ def train():
     head_model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
-    head_model.fit(train_images, train_labels, epochs=20)
+    head_model.fit(train_images, head_labels, epochs=20)
     head_model.save('head_model.h5')
 
 

@@ -36,10 +36,6 @@ def fun_timer():
         print('--------------------------------')
         print('Welcome to try the new model!')
         print('--------------------------------')
-        # print(np.array(data))
-        # print(np.array(labels))
-        # print(np.array(data).shape)
-        # print(np.array(labels).shape)
         os._exit(0)
 
 
@@ -57,10 +53,18 @@ timer.start()
 
 
 # 处理数据
-
-data = []
-labels = []
-
+try:
+    dataFile = np.load('data.npz')
+except IOError:
+    data = []
+    stand_labels = []
+    head_labels = []
+else:
+    data = dataFile['data'].tolist()
+    stand_labels = dataFile['stand_labels'].tolist()
+    stand_labels = dataFile['stand_labels'].tolist()
+    head_labels = dataFile['head_labels'].tolist()
+    
 label_stand = [0]
 label_run = [0]
 dataArray = [[]]
@@ -82,9 +86,9 @@ def post():
     # 当数据达到24时:
     if len(dataArray[0]) >= 24:
         if label_stand[0] >= label_run[0]:
-            labels.append(0)
+            stand_labels.append(0)
         else:
-            labels.append(1)
+            stand_labels.append(1)
         data.append(dataArray[0])
         # 清理
         label_stand[0] = 0
@@ -98,7 +102,7 @@ def train():
     index = np.arange(len(data))
     np.random.shuffle(index)
     train_images = np.array(data)[index]
-    train_labels = np.array(labels)[index]
+    train_labels = np.array(stand_labels)[index]
     stand_model = tf.keras.models.load_model('stand_model.h5')
     stand_model.fit(train_images, train_labels, epochs=20)
     stand_model.save('stand_model.h5')
